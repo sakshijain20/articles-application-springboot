@@ -5,6 +5,7 @@ import java.util.List;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 @Document(collection = "articles")
 public class Article {
@@ -16,7 +17,11 @@ public class Article {
 	 private String articleContent;
 	 private List<String> genres;
 	 
-	 public Article() {}
+	 @DocumentReference
+	 private List<Comment> comments;
+	 
+	
+	public Article() {}
 	 
 	 public Article(String articleId, String articleTitle, String articleContent, List<String> genres) {
 			super();
@@ -94,6 +99,20 @@ public class Article {
 	 */
 	public void setGenres(List<String> genres) {
 		this.genres = genres;
+	}
+	
+	 /**
+		 * @return the comments
+		 */
+	public List<Comment> getComments() {
+			return comments;
+	}
+
+		/**
+		 * @param comments the comments to set
+		 */
+	public void setComments(List<Comment> comments) {
+			this.comments = comments;
 	}
 		 
 }
