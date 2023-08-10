@@ -1,4 +1,4 @@
-package com.api.articles.controller;
+package com.api.articles.repository;
 
 import java.util.Optional;
 

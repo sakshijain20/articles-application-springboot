@@ -30,6 +30,16 @@ public class Article {
 			this.articleContent = articleContent;
 			this.genres = genres;
 	}
+	 
+
+	public Article(Article articleBody) {
+		// TODO Auto-generated constructor stub
+		this.id = articleBody.getId();
+		this.articleId = articleBody.getArticleId();
+		this.articleTitle = articleBody.getArticleTitle();
+		this.articleContent = articleBody.getArticleContent();
+		this.genres = articleBody.getGenres();
+	}
 
 	/**
 	 * @return the id

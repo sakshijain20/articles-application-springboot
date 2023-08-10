@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,21 +20,26 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.articles.model.Article;
 import com.api.articles.service.ArticleService;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/v1/articles")
 public class ArticleController {
 	
 	@Autowired
 	private ArticleService service;
-
-
+	
+	@GetMapping("/all")
+	public String dummyEndpoint() {
+		return "Public content!!!";
+	}
+	
     @GetMapping
     public ResponseEntity<List<Article>> getArticles() {
-        return new ResponseEntity<List<Article>>(service.findAllMovies(), HttpStatus.OK);
+        return new ResponseEntity<List<Article>>(service.findAllArticles(), HttpStatus.OK);
     }
 
     @GetMapping("/{articleId}")
-    public ResponseEntity<Optional<Article>> getSingleMovie(@PathVariable String articleId){
+    public ResponseEntity<Optional<Article>> getSingleArticle(@PathVariable String articleId){
     	
     	Optional<Article> articleData = service.findArticleByArticleId(articleId);
 
@@ -47,6 +53,7 @@ public class ArticleController {
     }
     
     @PostMapping
+    @PreAuthorize("hasRole('USER')" )
     public ResponseEntity<Article> addArticle(@RequestBody Article article) {
   	  
   	  try {
@@ -59,7 +66,8 @@ public class ArticleController {
     }
 
     @PutMapping("/{articleId}")
-    public ResponseEntity<Article> updateTutorial(@PathVariable("articleId") String id, @RequestBody Article article) {
+    @PreAuthorize("hasRole('USER')" )
+    public ResponseEntity<Article> updateArticle(@PathVariable("articleId") String id, @RequestBody Article article) {
   	  Optional<Article> articleData = service.findArticleByArticleId(id);
 
   	  if (articleData.isPresent()) {
@@ -76,7 +84,8 @@ public class ArticleController {
     }
 
     @DeleteMapping("/{articleId}")
-    public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("articleId") String id) {
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public ResponseEntity<HttpStatus> deleteArticle(@PathVariable("articleId") String id) {
       
   	  try {
   		    service.deleteArticleByArticleId(id);
@@ -87,6 +96,7 @@ public class ArticleController {
     }
 
     @DeleteMapping
+    @PreAuthorize("hasRole('ADMIN')" )
     public ResponseEntity<HttpStatus> deleteAllArticles() {
       
   	  try {

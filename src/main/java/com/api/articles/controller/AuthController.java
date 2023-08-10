@@ -27,6 +27,8 @@ import com.api.articles.payload.request.LoginRequest;
 import com.api.articles.payload.request.SignupRequest;
 import com.api.articles.payload.response.JwtResponse;
 import com.api.articles.payload.response.MessageResponse;
+import com.api.articles.repository.RoleRepository;
+import com.api.articles.repository.UserRepository;
 import com.api.articles.security.jwt.JwtUtils;
 import com.api.articles.security.services.UserDetailsImpl;
 
