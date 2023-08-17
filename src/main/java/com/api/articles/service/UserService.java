@@ -51,7 +51,7 @@ public class UserService {
 				List<Comment> comments = article.getComments();
 				for(Comment comment: comments) {
 					Object id =comment.getId();
-					System.out.println((ObjectId) id);
+					//System.out.println((ObjectId) id);
 					commentRepo.deleteById((ObjectId) id);
 					
 				}
