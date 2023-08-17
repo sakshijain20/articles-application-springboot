@@ -28,17 +28,14 @@ public class ArticleController {
 	@Autowired
 	private ArticleService service;
 	
-	@GetMapping("/all")
-	public String dummyEndpoint() {
-		return "Public content!!!";
-	}
-	
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Article>> getArticles() {
         return new ResponseEntity<List<Article>>(service.findAllArticles(), HttpStatus.OK);
     }
 
     @GetMapping("/{articleId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Optional<Article>> getSingleArticle(@PathVariable String articleId){
     	
     	Optional<Article> articleData = service.findArticleByArticleId(articleId);

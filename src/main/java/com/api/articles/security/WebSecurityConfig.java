@@ -66,6 +66,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 	        .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll().
 	        		requestMatchers("/api/v1/articles/*").permitAll()
 	        		.requestMatchers("/api/v1/comments/*").permitAll()
+	        		.requestMatchers("/admin_portal").permitAll()
 	        		.anyRequest().authenticated());
 
 	    http.authenticationProvider(authenticationProvider());

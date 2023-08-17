@@ -36,7 +36,8 @@ public class User {
   @DocumentReference
   private List<Article> articles;
 
-  public User() {
+  
+public User() {
   }
 
   public User(String username, String email, String password) {
@@ -84,4 +85,19 @@ public class User {
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
   }
+  
+  /**
+   * @return the articles
+   */
+  public List<Article> getArticles() {
+  	return articles;
+  }
+
+  /**
+   * @param articles the articles to set
+   */
+  public void setArticles(List<Article> articles) {
+  	this.articles = articles;
+  }
+
 }

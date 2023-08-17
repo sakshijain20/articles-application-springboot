@@ -22,7 +22,7 @@ public class CommentController {
 	private CommentService service;
 	
 	@PostMapping()
-	@PreAuthorize("hasRole('USER')")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Comment> createComment(@RequestBody Map<String, String> payload) {
 
         return new ResponseEntity<Comment>(service.createComment(payload.get("commentBody"), payload.get("articleId")), HttpStatus.OK);

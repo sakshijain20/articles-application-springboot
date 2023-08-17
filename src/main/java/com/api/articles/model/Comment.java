@@ -14,11 +14,13 @@ public class Comment {
 	private String comment;
 	private LocalDateTime created;
 	private LocalDateTime updated;
-	
+	private String username;
+
 	public Comment(){}
 	
-	public Comment(String comment, LocalDateTime created, LocalDateTime updated) {
+	public Comment(String username,String comment, LocalDateTime created, LocalDateTime updated) {
 		super();
+		this.username = username;
 		this.comment = comment;
 		this.created = created;
 		this.updated = updated;
@@ -80,7 +82,19 @@ public class Comment {
 		this.updated = updated;
 	}
 	
-	
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * @param username the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
 	
 	
 	

@@ -34,8 +34,6 @@ public class ArticleService {
     }
     
     public Article addArticle(Article article){
-    	
-    	 
     	Article _article = repository.insert(new Article(article.getArticleId(),article.getArticleTitle(),article.getArticleContent(),article.getGenres()));
     	Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
     	UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
