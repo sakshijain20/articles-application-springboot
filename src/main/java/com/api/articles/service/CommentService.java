@@ -2,6 +2,7 @@ package com.api.articles.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +43,20 @@ public class CommentService {
 	    return comment;
 	}
 	
-	public void deleteAllCommentsbyArticleId(Object id){
+	public Comment updateComment(Comment _comment, String articleId) {
+			
+			Comment comment = repository.save(_comment);
+			return comment;
+		}
+		
+	
+	public void deleteAllCommentsbyArticleId(ObjectId id){
 		 repository.deleteById((ObjectId) id);
+	}
+
+	public Optional<Comment> findCommentByCommentId(ObjectId id) {
+		// TODO Auto-generated method stub
+		return repository.findById(id);
 	}
 
 }

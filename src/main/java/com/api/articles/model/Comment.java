@@ -26,9 +26,7 @@ public class Comment {
 		this.updated = updated;
 	}
 
-	/**
-	 * @return the id
-	 */
+	
 	public ObjectId getId() {
 		return id;
 	}
@@ -39,19 +37,16 @@ public class Comment {
 	public void setId(ObjectId id) {
 		this.id = id;
 	}
+	
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 
 	/**
 	 * @return the comment
 	 */
 	public String getComment() {
 		return comment;
-	}
-
-	/**
-	 * @param comment the comment to set
-	 */
-	public void setComment(String comment) {
-		this.comment = comment;
 	}
 
 	/**
