@@ -7,20 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.api.articles.model.Article;
 import com.api.articles.model.User;
 import com.api.articles.repository.ArticleRepository;
-import com.api.articles.security.services.UserDetailsImpl;
+import com.api.articles.security.services.UserDetailsServiceImpl;
 
 @Service
 public class ArticleService {
 	
 	@Autowired
     private ArticleRepository repository;
+	
+	@Autowired
+	private UserDetailsServiceImpl userService;
 	
 	@Autowired
 	MongoTemplate mongoTemplate;
@@ -34,13 +35,10 @@ public class ArticleService {
     }
     
     public Article addArticle(Article article, String username){
-    	Article _article = repository.insert(new Article(article.getArticleId(),article.getArticleTitle(),article.getArticleContent(),article.getGenres(), username));
-    	Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
-    	UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
-    	
+    	Article _article = repository.insert(new Article(article.getArticleId(),article.getArticleTitle(),article.getArticleContent(),article.getGenres(), username));	
     	
     	mongoTemplate.update(User.class)
-		.matching(Criteria.where("_id").is(userPrincipal.getId()))
+		.matching(Criteria.where("_id").is(userService.getCurrentUser().getId()))
 		.apply(new Update().push("articles").value(_article))
 		.first();
     	

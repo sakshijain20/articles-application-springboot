@@ -1,7 +1,6 @@
 package com.api.articles.controller;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.articles.model.Comment;
-import com.api.articles.security.services.UserDetailsImpl;
 import com.api.articles.security.services.UserDetailsServiceImpl;
 import com.api.articles.service.CommentService;
 
@@ -52,7 +47,7 @@ public class CommentController {
 		 //System.out.println(commentData);
 		
 		if (commentData.isPresent())
-				if((userService.getCurrentUserName()).equals(commentData.get().getUsername())) 
+				if((userService.getCurrentUser().getUsername()).equals(commentData.get().getUsername())) 
 				{
 					 Comment _comment = commentData.get();
 					 

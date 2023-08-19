@@ -27,10 +27,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		return UserDetailsImpl.build(user);
 	}
 	
-	  public String getCurrentUserName() {
-			Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
-	    	UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
-	    	return userPrincipal.getUsername();  
-	  }
+	public UserDetailsImpl getCurrentUser() {
+		Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
+    	return (UserDetailsImpl) auth.getPrincipal();
+	}
+	
+//	  public String getCurrentUserName() {
+//			Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
+//	    	UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
+//	    	return userPrincipal.getUsername();  
+//	  }
 
 }

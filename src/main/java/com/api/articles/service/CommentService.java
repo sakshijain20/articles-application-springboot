@@ -1,7 +1,6 @@
 package com.api.articles.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import org.bson.types.ObjectId;
@@ -9,15 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Update;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.api.articles.model.Article;
 import com.api.articles.model.Comment;
 import com.api.articles.repository.CommentRepository;
-import com.api.articles.security.services.UserDetailsImpl;
 import com.api.articles.security.services.UserDetailsServiceImpl;
 
 @Service
@@ -30,11 +25,11 @@ public class CommentService {
 	private MongoTemplate mongoTemplate;
 	
 	@Autowired
-	private UserDetailsServiceImpl service;
+	private UserDetailsServiceImpl userService;
 
 	public Comment createComment(String commentBody, String articleId) {
     	
-		Comment comment = repository.insert(new Comment(service.getCurrentUserName()
+		Comment comment = repository.insert(new Comment(userService.getCurrentUser().getUsername()
 				,commentBody, LocalDateTime.now(), LocalDateTime.now()));
 		
 		mongoTemplate.update(Article.class)

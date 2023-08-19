@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.api.articles.model.Article;
 import com.api.articles.payload.response.MessageResponse;
 import com.api.articles.repository.ArticleRepository;
-import com.api.articles.security.services.UserDetailsImpl;
 import com.api.articles.security.services.UserDetailsServiceImpl;
 import com.api.articles.service.ArticleService;
 
@@ -74,7 +71,7 @@ public class ArticleController {
     	}
     	else {
 	  	  try {
-	  		   Article _article = service.addArticle(article,userService.getCurrentUserName());
+	  		   Article _article = service.addArticle(article,userService.getCurrentUser().getUsername());
 	  		    return new ResponseEntity<>(_article, HttpStatus.CREATED);
 	  		  } catch (Exception e) {
 	  		    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -90,7 +87,7 @@ public class ArticleController {
 	  	Optional<Article> articleData = service.findArticleByArticleId(id);
 	  	  
 	  	  if (articleData.isPresent()) {
-	  		  if(articleData.get().getUsername().equals(userService.getCurrentUserName())) {
+	  		  if(articleData.get().getUsername().equals(userService.getCurrentUser().getUsername())) {
 		  	    Article _article = articleData.get();
 		  	    _article.setArticleTitle(article.getArticleTitle());
 		  	    _article.setArticleContent(article.getArticleContent());
@@ -115,7 +112,7 @@ public class ArticleController {
     public ResponseEntity<HttpStatus> deleteArticle(@PathVariable("articleId") String id) {		
 		Optional<Article> article = service.findArticleByArticleId(id);
 		
-		if( (userService.getCurrentUserName()).equals(article.get().getUsername()) ) 
+		if( (userService.getCurrentUser().getUsername()).equals(article.get().getUsername()) ) 
 		{
 	  	  try {
 	  		    service.deleteArticleByArticleId(id);
