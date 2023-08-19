@@ -19,6 +19,7 @@ public class Article {
 	 private String articleContent;
 	 private List<String> genres;
 	 
+	 @JsonIgnore
 	 private String username;
 
 	@DocumentReference
