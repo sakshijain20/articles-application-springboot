@@ -12,4 +12,6 @@ import com.api.articles.model.Article;
 public interface ArticleRepository extends MongoRepository<Article, ObjectId>{
 	
 	Optional<Article> findArticleByArticleId(String articleId);
+	
+	Boolean existsByArticleId(String articleId);
 }

@@ -4,18 +4,31 @@ import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 @Document(collection = "articles")
 public class Article {
 	
 	 @Id
 	 private ObjectId id;
+	 
+	 @NotBlank
 	 private String articleId;
+	 
+	 @NotBlank
+	 @Size(max = 30)
 	 private String articleTitle;
+	 
+	 @NotBlank
+	 @Size(max = 250)
 	 private String articleContent;
 	 private List<String> genres;
 	 

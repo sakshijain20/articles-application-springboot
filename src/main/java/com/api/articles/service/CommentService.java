@@ -18,6 +18,7 @@ import com.api.articles.model.Article;
 import com.api.articles.model.Comment;
 import com.api.articles.repository.CommentRepository;
 import com.api.articles.security.services.UserDetailsImpl;
+import com.api.articles.security.services.UserDetailsServiceImpl;
 
 @Service
 public class CommentService {
@@ -27,13 +28,13 @@ public class CommentService {
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	
+	@Autowired
+	private UserDetailsServiceImpl service;
 
 	public Comment createComment(String commentBody, String articleId) {
-		
-		Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
-    	UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
     	
-		Comment comment = repository.insert(new Comment(userPrincipal.getUsername()
+		Comment comment = repository.insert(new Comment(service.getCurrentUserName()
 				,commentBody, LocalDateTime.now(), LocalDateTime.now()));
 		
 		mongoTemplate.update(Article.class)

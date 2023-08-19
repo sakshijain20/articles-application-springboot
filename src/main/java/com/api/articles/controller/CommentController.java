@@ -22,7 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.api.articles.model.Comment;
 import com.api.articles.security.services.UserDetailsImpl;
+import com.api.articles.security.services.UserDetailsServiceImpl;
 import com.api.articles.service.CommentService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/comments")
@@ -31,26 +34,25 @@ public class CommentController {
 	@Autowired
 	private CommentService service;
 	
+	@Autowired
+	private UserDetailsServiceImpl userService;
+	
 	@PostMapping()
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Comment> createComment(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Comment> createComment(@Valid @RequestBody Map<String, String> payload) {
 
         return new ResponseEntity<Comment>(service.createComment(payload.get("commentBody"), payload.get("articleId")), HttpStatus.OK);
     }
 	
 	@PutMapping("/{id}")
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-	public ResponseEntity<Comment> updateComment(@RequestBody Map<String, String> payload, @PathVariable ObjectId id) {
+	public ResponseEntity<Comment> updateComment(@Valid @RequestBody Map<String, String> payload, @PathVariable ObjectId id) {
 	
 		 Optional<Comment> commentData = service.findCommentByCommentId(id);
 		 //System.out.println(commentData);
-			 
-		Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
-		UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
-	
 		
 		if (commentData.isPresent())
-				if((userPrincipal.getUsername()).equals(commentData.get().getUsername())) 
+				if((userService.getCurrentUserName()).equals(commentData.get().getUsername())) 
 				{
 					 Comment _comment = commentData.get();
 					 

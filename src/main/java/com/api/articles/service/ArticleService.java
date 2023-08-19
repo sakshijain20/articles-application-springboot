@@ -38,6 +38,7 @@ public class ArticleService {
     	Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
     	UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
     	
+    	
     	mongoTemplate.update(User.class)
 		.matching(Criteria.where("_id").is(userPrincipal.getId()))
 		.apply(new Update().push("articles").value(_article))

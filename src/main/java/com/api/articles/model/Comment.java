@@ -6,14 +6,23 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 @Document(collection = "comments")
 public class Comment {
 
 	@Id
 	private ObjectId id;
+	@NotBlank
+	@Size(max = 80)
 	private String comment;
 	private LocalDateTime created;
 	private LocalDateTime updated;
+	
+	@JsonIgnore
 	private String username;
 
 	public Comment(){}

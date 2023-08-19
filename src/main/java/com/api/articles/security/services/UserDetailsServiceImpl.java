@@ -1,6 +1,8 @@
 package com.api.articles.security.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,5 +26,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 		return UserDetailsImpl.build(user);
 	}
+	
+	  public String getCurrentUserName() {
+			Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
+	    	UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
+	    	return userPrincipal.getUsername();  
+	  }
 
 }
