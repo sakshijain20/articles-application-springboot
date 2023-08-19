@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.api.articles.model.Article;
+import com.api.articles.security.services.UserDetailsImpl;
 import com.api.articles.service.ArticleService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -52,9 +55,12 @@ public class ArticleController {
     @PostMapping
     @PreAuthorize("hasRole('USER')" )
     public ResponseEntity<Article> addArticle(@RequestBody Article article) {
+    	
+    	Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
+		UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
   	  
   	  try {
-  		   Article _article = service.addArticle(article);
+  		   Article _article = service.addArticle(article,userPrincipal.getUsername());
   		    return new ResponseEntity<>(_article, HttpStatus.CREATED);
   		  } catch (Exception e) {
   		    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -64,32 +70,54 @@ public class ArticleController {
 
     @PutMapping("/{articleId}")
     @PreAuthorize("hasRole('USER')" )
-    public ResponseEntity<Article> updateArticle(@PathVariable("articleId") String id, @RequestBody Article article) {
-  	  Optional<Article> articleData = service.findArticleByArticleId(id);
-
-  	  if (articleData.isPresent()) {
-  	    Article _article = articleData.get();
-  	    _article.setArticleId(article.getArticleId());
-  	    _article.setArticleTitle(article.getArticleTitle());
-  	    _article.setArticleContent(article.getArticleContent());
-  	    _article.setGenres(article.getGenres());
-  	    
-  	    return new ResponseEntity<>(service.addArticle(_article), HttpStatus.OK);
-  	  } else {
-  	    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-  	  }
+    public ResponseEntity<Article> updateArticle(@PathVariable("articleId") String id, @RequestBody Article article)
+    {
+	  	Optional<Article> articleData = service.findArticleByArticleId(id);
+	  	  
+	  	Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
+		UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
+	  	  
+	  	  if (articleData.isPresent()) {
+	  		  if(articleData.get().getUsername().equals(userPrincipal.getUsername())) {
+		  	    Article _article = articleData.get();
+		  	    _article.setArticleTitle(article.getArticleTitle());
+		  	    _article.setArticleContent(article.getArticleContent());
+		  	    _article.setGenres(article.getGenres());
+		  	    
+		  	    _article = service.updateArticle(_article);
+		  	    
+		  	    return new ResponseEntity<>(_article, HttpStatus.OK);
+	  		  }
+	  		  else {
+	  			  return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+	  		  }
+	  	  } 
+	  	  else
+	  	  {
+	  	    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	  	  }
     }
 
     @DeleteMapping("/{articleId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<HttpStatus> deleteArticle(@PathVariable("articleId") String id) {
-      
-  	  try {
-  		    service.deleteArticleByArticleId(id);
-  		    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-  		  } catch (Exception e) {
-  		    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-  		  }
+    	Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
+		UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
+		
+		Optional<Article> article = service.findArticleByArticleId(id);
+		
+		if( (userPrincipal.getUsername()).equals(article.get().getUsername()) ) 
+		{
+	  	  try {
+	  		    service.deleteArticleByArticleId(id);
+	  		    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	  		  } catch (Exception e) {
+	  		    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+	  		  }
+		}
+		else {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
     }
 
     @DeleteMapping

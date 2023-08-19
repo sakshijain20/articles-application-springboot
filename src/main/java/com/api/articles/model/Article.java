@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Document(collection = "articles")
 public class Article {
 	
@@ -17,28 +19,32 @@ public class Article {
 	 private String articleContent;
 	 private List<String> genres;
 	 
-	 @DocumentReference
+	 private String username;
+
+	@DocumentReference
 	 private List<Comment> comments;
 	 
 	
 	public Article() {}
 	 
-	 public Article(String articleId, String articleTitle, String articleContent, List<String> genres) {
+	 public Article(String articleId, String articleTitle, String articleContent, List<String> genres, String username) {
 			super();
 			this.articleId = articleId;
 			this.articleTitle = articleTitle;
 			this.articleContent = articleContent;
 			this.genres = genres;
+			this.username = username;
 	}
 	 
 
-	public Article(Article articleBody) {
+	public Article(Article articleBody, String username) {
 		// TODO Auto-generated constructor stub
 		this.id = articleBody.getId();
 		this.articleId = articleBody.getArticleId();
 		this.articleTitle = articleBody.getArticleTitle();
 		this.articleContent = articleBody.getArticleContent();
 		this.genres = articleBody.getGenres();
+		this.username = username;
 	}
 
 	/**
@@ -123,6 +129,20 @@ public class Article {
 		 */
 	public void setComments(List<Comment> comments) {
 			this.comments = comments;
+	}
+	
+	/**
+	 * @return the username
+	 */
+	public String getUsername() {
+		return username;
+	}
+
+	/**
+	 * @param username the username to set
+	 */
+	public void setUsername(String username) {
+		this.username = username;
 	}
 		 
 }

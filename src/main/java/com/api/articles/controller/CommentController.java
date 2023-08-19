@@ -1,6 +1,7 @@
 package com.api.articles.controller;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,23 +43,30 @@ public class CommentController {
 	public ResponseEntity<Comment> updateComment(@RequestBody Map<String, String> payload, @PathVariable ObjectId id) {
 	
 		 Optional<Comment> commentData = service.findCommentByCommentId(id);
-		 System.out.println(commentData);
+		 //System.out.println(commentData);
 			 
 		Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
 		UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
+	
 		
-		if (commentData.isPresent() && ((userPrincipal.getUsername()).equals(commentData.get().getUsername()) )) {
-		 Comment _comment = commentData.get();
-		 
-		 //System.out.println(_comment.getComment());
-		 //System.out.println(_comment.getId());
-		 _comment.setComment(payload.get("commentBody"));
-		 //System.out.println(_comment.getComment());
-		_comment.setUpdated(LocalDateTime.now());
-		 
-		 return new ResponseEntity<>(service.updateComment(_comment, payload.get("articleId")), HttpStatus.OK);
-		 } else {
-		  return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		if (commentData.isPresent())
+				if((userPrincipal.getUsername()).equals(commentData.get().getUsername())) 
+				{
+					 Comment _comment = commentData.get();
+					 
+					 //System.out.println(_comment.getComment());
+					 //System.out.println(_comment.getId());
+					 _comment.setComment(payload.get("commentBody"));
+					 //System.out.println(_comment.getComment());
+					_comment.setUpdated(LocalDateTime.now());
+					 
+					 return new ResponseEntity<>(service.updateComment(_comment, payload.get("articleId")), HttpStatus.OK);
+					}
+				else {
+					return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+				}
+		else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
 	 }

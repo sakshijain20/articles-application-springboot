@@ -33,8 +33,8 @@ public class ArticleService {
         return repository.findArticleByArticleId(articleId);
     }
     
-    public Article addArticle(Article article){
-    	Article _article = repository.insert(new Article(article.getArticleId(),article.getArticleTitle(),article.getArticleContent(),article.getGenres()));
+    public Article addArticle(Article article, String username){
+    	Article _article = repository.insert(new Article(article.getArticleId(),article.getArticleTitle(),article.getArticleContent(),article.getGenres(), username));
     	Authentication auth = SecurityContextHolder. getContext(). getAuthentication();
     	UserDetailsImpl userPrincipal = (UserDetailsImpl) auth.getPrincipal();
     	
@@ -45,6 +45,12 @@ public class ArticleService {
     	
     	return repository.save(_article);
     	
+    }
+    
+    public Article updateArticle(Article article) {
+    	
+    	Article _article = repository.save(article);
+    	return repository.save(_article);
     }
 
 	public void deleteArticleByArticleId(String id) {
