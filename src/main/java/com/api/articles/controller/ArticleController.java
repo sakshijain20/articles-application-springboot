@@ -93,9 +93,7 @@ public class ArticleController {
 		  	    _article.setArticleContent(article.getArticleContent());
 		  	    _article.setGenres(article.getGenres());
 		  	    
-		  	    _article = service.updateArticle(_article);
-		  	    
-		  	    return new ResponseEntity<>(_article, HttpStatus.OK);
+		  	    return new ResponseEntity<>(service.updateArticle(_article), HttpStatus.OK);
 	  		  }
 	  		  else {
 	  			  return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

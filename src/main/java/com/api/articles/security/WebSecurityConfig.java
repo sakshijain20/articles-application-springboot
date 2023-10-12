@@ -27,6 +27,7 @@ import com.api.articles.security.services.UserDetailsServiceImpl;
 //jsr250Enabled = true,
 //prePostEnabled = true) // by default
 public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
+	
 		@Autowired
 		UserDetailsServiceImpl userDetailsService;
 		
