@@ -1,0 +1,29 @@
+<div>
+
+        <!-- Home component -->
+        <app-home></app-home>
+
+        <div class= "flex-container grid two text-black p-4 border-0">
+                <div class="card"  *ngFor="let article of articles; ">
+                                                
+                        <!-- Article Title -->
+                        <h5 class="card-title">
+                                
+                                 <a [routerLink]="['/articles',article.articleId]">{{ article.articleTitle }}</a> 
+                         </h5>
+                        <h6 class="card-text"><strong>Genres:</strong>{{ article.genres}}</h6>
+                        <hr>
+
+                        <!-- Article content -->
+                        <p class="card-text truncate" >{{ article.articleContent }}</p>
+
+                        <!-- Footer to add link to show full article -->
+                        <!-- <div class="card-footer">
+                                <div class="media align-items-cent,ker">
+                                <div class="media-body"><a class="card-link text-uppercase" href="javascript:viewActiveArticle()">Read More...</a></div>
+                                </div>
+                        </div> -->
+                </div>
+        </div>
+
+</div>

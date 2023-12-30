@@ -1,13 +1,16 @@
 package com.api.articles.controller;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,6 +57,8 @@ public class AuthController {
 
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	  
+	  //System.out.println(loginRequest.getPassword());
 
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -65,12 +70,21 @@ public class AuthController {
     List<String> roles = userDetails.getAuthorities().stream()
         .map(item -> item.getAuthority())
         .collect(Collectors.toList());
-
-    return ResponseEntity.ok(new JwtResponse(jwt, 
-                         userDetails.getId(), 
-                         userDetails.getUsername(), 
-                         userDetails.getEmail(), 
-                         roles));
+    
+    Map<String,String> response = new HashMap<>();
+    
+    response.put("status","200");
+    response.put("jwt", jwt);
+    
+     response.put("role0", roles.get(0));
+    response.put("username", userDetails.getUsername());
+    response.put("email", userDetails.getEmail());
+//    return ResponseEntity.ok(new JwtResponse(jwt, 
+//                         userDetails.getId(), 
+//                         userDetails.getUsername(), 
+//                         userDetails.getEmail(), 
+//                         roles));
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @PostMapping("/signup")
@@ -118,8 +132,10 @@ public class AuthController {
 
     user.setRoles(roles);
     userRepository.save(user);
-
-    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    Map<String,String> response = new HashMap<>();
+    response.put("status", "200");
+    response.put("username", signUpRequest.getUsername());
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
   
   

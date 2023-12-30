@@ -1,0 +1,34 @@
+<html>
+    <body>
+        <div>
+            <!-- Home component -->
+            <app-home></app-home>
+            <div class= "flex-container grid two text-black p-4 border-0">
+                <h1> {{ article.articleTitle }} </h1>
+        
+                <p> {{ article.articleContent }} </p>
+            </div>
+
+            <div class = "genres" *ngFor="let genre of genres"
+            [genre]="genre">
+            <h4> {{ genre }} </h4>
+        </div>
+
+        <hr>
+
+        <form #commentForm="ngForm" [formGroup]="commentForm">
+        <label for="comment" style="padding-top:1%"><i>Add a comment here..</i>
+        </label>
+        <input id="comment" type="text" class="form-content" name="comment"  formControlName = "comment" required />
+        </form>
+
+        
+        <footer *ngFor = "let comment of comments" 
+        [comment]="comment">
+            <p> {{ comment.comment }} </p>
+        </footer>
+    
+            
+        </div>
+    </body>
+</html>

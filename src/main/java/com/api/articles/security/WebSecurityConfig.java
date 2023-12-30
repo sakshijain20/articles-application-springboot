@@ -3,6 +3,7 @@ package com.api.articles.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -64,9 +65,11 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 			http.csrf(csrf -> csrf.disable())
 	        .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
 	        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-	        .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll().
-	        		requestMatchers("/api/v1/articles/*").permitAll()
-	        		.requestMatchers("/api/v1/comments/*").permitAll()
+	        .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
+	        		.requestMatchers(HttpMethod.GET)                  
+                    .permitAll()
+	        		.requestMatchers("/articles/*").permitAll()
+	        		.requestMatchers("/comments/*").permitAll()
 	        		.requestMatchers("/admin_portal").permitAll()
 	        		.anyRequest().authenticated());
 

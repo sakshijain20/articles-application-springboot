@@ -21,6 +21,7 @@ import com.api.articles.security.services.*;
 
 
 public class AuthTokenFilter extends OncePerRequestFilter {
+	
   @Autowired
   private JwtUtils jwtUtils;
 
@@ -30,8 +31,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
   private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse res, FilterChain filterChain)
       throws ServletException, IOException {
+	
     try {
       String jwt = parseJwt(request);
       if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
@@ -48,16 +50,16 @@ public class AuthTokenFilter extends OncePerRequestFilter {
       logger.error("Cannot set user authentication: {}", e);
     }
 
-    filterChain.doFilter(request, response);
+    filterChain.doFilter(request, res);
   }
 
   private String parseJwt(HttpServletRequest request) {
+	
     String headerAuth = request.getHeader("Authorization");
-
+    System.out.println("Token: " +headerAuth);
     if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
       return headerAuth.substring(7, headerAuth.length());
     }
-
     return null;
   }
 }

@@ -1,9 +1,12 @@
 package com.api.articles.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,9 +28,9 @@ import com.api.articles.service.ArticleService;
 
 import jakarta.validation.Valid;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/v1/articles")
+@CrossOrigin(origins = "*", maxAge= 3600)
+@RequestMapping("/articles")
 public class ArticleController {
 	
 	@Autowired
@@ -40,15 +43,14 @@ public class ArticleController {
 	private UserDetailsServiceImpl userService;
 	
     @GetMapping
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<Article>> getArticles() {
+    	
         return new ResponseEntity<List<Article>>(service.findAllArticles(), HttpStatus.OK);
     }
 
     @GetMapping("/{articleId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Optional<Article>> getSingleArticle(@PathVariable String articleId){
-    	
     	Optional<Article> articleData = service.findArticleByArticleId(articleId);
 
    	  if (articleData.isPresent()) {
@@ -70,12 +72,25 @@ public class ArticleController {
     		          .body(new MessageResponse("Error: ArticleId already exist!"));
     	}
     	else {
-	  	  try {
+//    		  HttpHeaders headers = new HttpHeaders();
+//	          headers.set("Access-Control-Allow-Origin","http://localhost:4200");
+//	          headers.set("Access-Control-Allow-Methods","POST, GET, PUT, UPDATE, OPTIONS");
+//	          headers.set("Access-Control-Allow-Headers","Content-Type, Accept, X-Requested-With");
 	  		   Article _article = service.addArticle(article,userService.getCurrentUser().getUsername());
-	  		    return new ResponseEntity<>(_article, HttpStatus.CREATED);
-	  		  } catch (Exception e) {
-	  		    return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	  		  }
+	  		    
+	          Map<String,String> response = new HashMap<>();
+	         
+	          if(_article!=null)
+	          {
+	              response.put("status","200");
+	              response.put("message","Added successfully");
+	          } else
+	          {
+	              response.put("status","404");
+	              response.put("message","Not added order");
+	          }
+	          return new ResponseEntity<>(response,HttpStatus.CREATED);
+	  		  
     	}
       
     }
